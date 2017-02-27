@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
+import android.view.View;
 
 import com.opencsv.CSVWriter;
 
@@ -23,14 +24,18 @@ class BigComputationTask extends AsyncTask {
     Context mainContext;
     String path1;
     int temp = 0, temp1 = 0;
+    View view;
+    MainActivity activity1;
 
-    public BigComputationTask(String fileName, String fileName1, ArrayList<String[]> inData, Context context) {
+    public BigComputationTask(String fileName, String fileName1, ArrayList<String[]> inData, Context context, View view, MainActivity activity2) {
         dataArray = new ArrayList<>();
         this.dataArray = inData;
         this.filename = fileName;
         this.fileName1 = fileName1;
         this.mainContext = context;
         this.path1 = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data").toString();
+        this.view = view;
+        this.activity1 = activity2;
     }
 
     @Override
@@ -74,25 +79,18 @@ class BigComputationTask extends AsyncTask {
         }
         csvWriter = new CSVWriter(mFileWriter);
         csvWriter1 = new CSVWriter(mFileWriter1);
-        if (temp == 1) {
-            String[] header = {"Timestamp", "Date_Time", "Accelerometer_x", "Accelerometer_y", "Accelerometer_z", "Resultant Accelerometer",
-                    "Magnetometer_x", "Magnetometer_y", "Magnetometer_z", "Light", "Orientation(Azimuth)", "Orientation(Pitch)",
-                    "Orientation(Roll)", "Proximity", "Latitude", "Longitude", "Speed(GPS)", "Altitude", "Battery level(%)", "Battery Temperature(°C)",
-                    "Gravity_x", "Gravity_y", "Gravity_z", "Resultant_gravity", "Gyroscope_x", "Gyroscope_y", "Gyroscope_z", "Linear_acceleration_x",
-                    "Linear_acceleration_y", "Linear_acceleration_z", "Resultant_linear_acceleration", "Activity", "Device position"
-                    , "Location", "Interval"};
-            csvWriter.writeNext(header);
-        }
-        if (temp1 == 1) {
-            String[] header = {"Timestamp", "Date_Time", "Accelerometer_x", "Accelerometer_y", "Accelerometer_z", "Resultant Accelerometer",
-                    "Magnetometer_x", "Magnetometer_y", "Magnetometer_z", "Light", "Orientation(Azimuth)", "Orientation(Pitch)",
-                    "Orientation(Roll)", "Proximity", "Latitude", "Longitude", "Speed(GPS)", "Altitude", "Battery level(%)", "Battery Temperature(°C)",
-                    "Gravity_x", "Gravity_y", "Gravity_z", "Resultant_gravity", "Gyroscope_x", "Gyroscope_y", "Gyroscope_z", "Linear_acceleration_x",
-                    "Linear_acceleration_y", "Linear_acceleration_z", "Resultant_linear_acceleration", "Activity", "Device position"
-                    , "Location", "Interval"};
-            csvWriter1.writeNext(header);
-        }
+        String[] header = {"Timestamp", "Date_Time", "Accelerometer_x", "Accelerometer_y", "Accelerometer_z", "Resultant Accelerometer",
+                "Magnetometer_x", "Magnetometer_y", "Magnetometer_z", "Light", "Orientation(Azimuth)", "Orientation(Pitch)",
+                "Orientation(Roll)", "Proximity", "Latitude", "Longitude", "Speed(GPS)", "Altitude", "Battery level(percent)", "Battery Temperature(celsius)",
+                "Gravity_x", "Gravity_y", "Gravity_z", "Resultant_gravity", "Gyroscope_x", "Gyroscope_y", "Gyroscope_z", "Linear_acceleration_x",
+                "Linear_acceleration_y", "Linear_acceleration_z", "Resultant_linear_acceleration", "Activity", "Device position"
+                , "Location", "Interval"};
 
+        if (temp == 1)
+            csvWriter.writeNext(header);
+
+        if (temp1 == 1)
+            csvWriter1.writeNext(header);
 
         csvWriter.writeAll(dataArray);
         csvWriter1.writeAll(dataArray);
@@ -107,7 +105,9 @@ class BigComputationTask extends AsyncTask {
             Log.d(mainContext.toString(), "Close or flush error!");
             e.printStackTrace();
         }
+        activity1.activate();
         return null;
     }
+
 }
 

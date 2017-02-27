@@ -39,6 +39,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -113,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private int day;
     private String month;
     private ArrayList<String[]> dataArray;
+    private View passView;
 
     public static void verifyStoragePermissions(Activity activity) {
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -181,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        passView = getLayoutInflater().inflate(R.layout.activity_main, new LinearLayout(this), false);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         verifyStoragePermissions(MainActivity.this);
@@ -604,11 +607,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             button.setText("Just a sec!");
             final String filename = day + "_" + month + "_" + myTag + "_" + myTagpos + ".csv";
             final String fileName1 = "AllData.csv";
-//            try {
-//                Thread.sleep(6000);
-//            } catch (Exception e) {
-//                Toast.makeText(MainActivity.this, "Sleep exception", Toast.LENGTH_SHORT).show();
-//            }
             Handler handler4 = new Handler();
             handler4.postDelayed(new Runnable() {
                 @Override
@@ -630,7 +628,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         }
 
                         public void onFinish() {
-                            button.setText("Start Logging!");
+                            button.setText("Processing!");
                             Toast.makeText(MainActivity.this, "Stopped Logging!", Toast.LENGTH_SHORT).show();
                             button.setEnabled(true);
                         }
@@ -640,7 +638,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     new CountDownTimer(120000, 100) {
 
                         public void onTick(long millis) {
-                            performTick(millis);
+                            performTick();
                         }
 
                         public void onFinish() {
@@ -648,7 +646,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             if (volumeCheck() == 1)
                                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_PLAY_SOUND);
                             Toast.makeText(MainActivity.this, String.valueOf("Size is " + dataArray.size()), Toast.LENGTH_LONG).show();
-                            BigComputationTask t1 = new BigComputationTask(filename, fileName1, dataArray, MainActivity.this);
+                            BigComputationTask t1 = new BigComputationTask(filename, fileName1, dataArray, MainActivity.this, passView, MainActivity.this);
                             t1.execute();
                             findViewById(R.id.button1).performClick();
                         }
@@ -674,11 +672,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             autoCompleteTextView.setEnabled(true);
             autoCompleteTextView.setText("");
             buttonFlag = 0;
-            button.setText("Start logging!");
+//            button.setText("Start logging!");
         }
     }
 
-    public void performTick(long millis) {
+    public void performTick() {
         Long tsLong = System.currentTimeMillis() / 1000;
         String ts = tsLong.toString();
         String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
@@ -730,5 +728,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (vol < maxvol)
             return 1;
         else return 0;
+    }
+
+    public void activate() {
+        button.setText("Lets see");
     }
 }
