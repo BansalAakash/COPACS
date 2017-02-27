@@ -17,12 +17,11 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.AudioManager;
-import android.media.MediaScannerConnection;
 import android.media.SoundPool;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.BatteryManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
@@ -31,7 +30,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -449,9 +447,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER || sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-            sensorManager.getRotationMatrix(mrotationMatrix, null,
+            SensorManager.getRotationMatrix(mrotationMatrix, null,
                     mAccelerometerReading, mMagnetometerReading);
-            sensorManager.getOrientation(mrotationMatrix, morientationAngles);
+            SensorManager.getOrientation(mrotationMatrix, morientationAngles);
             morientationAngles[0] = (float) Math.toDegrees(morientationAngles[0]);
             morientationAngles[1] = (float) Math.toDegrees(morientationAngles[1]);
             morientationAngles[2] = (float) Math.toDegrees(morientationAngles[2]);
@@ -642,49 +640,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     new CountDownTimer(120000, 100) {
 
                         public void onTick(long millis) {
-                            Long tsLong = System.currentTimeMillis() / 1000;
-                            String ts = tsLong.toString();
-                            String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-                            manualLocation = autoCompleteTextView.getText().toString();
-                            if (manualLocation.equals("") || manualLocation == null)
-                                manualLocation = "Not_specified";
-                            String[] data = {ts
-                                    , currentDateTimeString
-                                    , String.valueOf(mAccelerometerReading[0])
-                                    , String.valueOf(mAccelerometerReading[1])
-                                    , String.valueOf(mAccelerometerReading[2])
-                                    , String.valueOf(resultantAccelerometer)
-                                    , String.valueOf(mMagnetometerReading[0])
-                                    , String.valueOf(mMagnetometerReading[1])
-                                    , String.valueOf(mMagnetometerReading[2])
-                                    , String.valueOf(mLightReading)
-                                    , String.valueOf(morientationAngles[0])
-                                    , String.valueOf(morientationAngles[1])
-                                    , String.valueOf(morientationAngles[2])
-                                    , String.valueOf(mProximityReading)
-                                    , String.valueOf(latitude)
-                                    , String.valueOf(longitude)
-                                    , String.valueOf(speed)
-                                    , String.valueOf(altitude)
-                                    , String.valueOf(batteryLevel)
-                                    , String.valueOf(batteryTemperature)
-                                    , String.valueOf(mGravityReading[0])
-                                    , String.valueOf(mGravityReading[1])
-                                    , String.valueOf(mGravityReading[2])
-                                    , String.valueOf(resultantGravity)
-                                    , String.valueOf(mGyroscopeReading[0])
-                                    , String.valueOf(mGyroscopeReading[1])
-                                    , String.valueOf(mGyroscopeReading[2])
-                                    , String.valueOf(mLinearAccelerationReading[0])
-                                    , String.valueOf(mLinearAccelerationReading[1])
-                                    , String.valueOf(mLinearAccelerationReading[2])
-                                    , String.valueOf(resultantLinearAcceleration)
-                                    , myTag
-                                    , myTagpos
-                                    , manualLocation
-                                    , String.valueOf(currentInterval)};
-                            checkUniformity += 1;
-                            dataArray.add(data);
+                            performTick(millis);
                         }
 
                         public void onFinish() {
@@ -720,6 +676,52 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             buttonFlag = 0;
             button.setText("Start logging!");
         }
+    }
+
+    public void performTick(long millis) {
+        Long tsLong = System.currentTimeMillis() / 1000;
+        String ts = tsLong.toString();
+        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+        manualLocation = autoCompleteTextView.getText().toString();
+        if (manualLocation.equals("") || manualLocation == null)
+            manualLocation = "Not_specified";
+        String[] data = {ts
+                , currentDateTimeString
+                , String.valueOf(mAccelerometerReading[0])
+                , String.valueOf(mAccelerometerReading[1])
+                , String.valueOf(mAccelerometerReading[2])
+                , String.valueOf(resultantAccelerometer)
+                , String.valueOf(mMagnetometerReading[0])
+                , String.valueOf(mMagnetometerReading[1])
+                , String.valueOf(mMagnetometerReading[2])
+                , String.valueOf(mLightReading)
+                , String.valueOf(morientationAngles[0])
+                , String.valueOf(morientationAngles[1])
+                , String.valueOf(morientationAngles[2])
+                , String.valueOf(mProximityReading)
+                , String.valueOf(latitude)
+                , String.valueOf(longitude)
+                , String.valueOf(speed)
+                , String.valueOf(altitude)
+                , String.valueOf(batteryLevel)
+                , String.valueOf(batteryTemperature)
+                , String.valueOf(mGravityReading[0])
+                , String.valueOf(mGravityReading[1])
+                , String.valueOf(mGravityReading[2])
+                , String.valueOf(resultantGravity)
+                , String.valueOf(mGyroscopeReading[0])
+                , String.valueOf(mGyroscopeReading[1])
+                , String.valueOf(mGyroscopeReading[2])
+                , String.valueOf(mLinearAccelerationReading[0])
+                , String.valueOf(mLinearAccelerationReading[1])
+                , String.valueOf(mLinearAccelerationReading[2])
+                , String.valueOf(resultantLinearAcceleration)
+                , myTag
+                , myTagpos
+                , manualLocation
+                , String.valueOf(currentInterval)};
+        checkUniformity += 1;
+        dataArray.add(data);
     }
 
     public int volumeCheck() {
