@@ -674,7 +674,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             autoCompleteTextView.setEnabled(true);
             autoCompleteTextView.setText("");
             buttonFlag = 0;
-//            button.setText("Start logging!");
         }
     }
 
@@ -728,7 +727,4 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         else return 0;
     }
 
-    public void activate() {
-        button.setText("Lets see");
-    }
 }

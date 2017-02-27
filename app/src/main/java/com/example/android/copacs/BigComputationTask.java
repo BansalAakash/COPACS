@@ -105,12 +105,6 @@ class BigComputationTask extends AsyncTask {
             Log.d(mainContext.toString(), "Close or flush error!");
             e.printStackTrace();
         }
-        new Runnable() {
-            @Override
-            public void run() {
-                activity1.activate();
-            }
-        };
         return null;
     }
 }
