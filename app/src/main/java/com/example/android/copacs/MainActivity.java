@@ -247,7 +247,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data");
         if (!folder.exists()) {
             folder.mkdir();
-            Toast.makeText(this, "Folder created", Toast.LENGTH_SHORT).show();
         }
         mSoundIdInit = mySoundPool.load(this, R.raw.startsoundinit, 1);
         mSoundIdtart = mySoundPool.load(this, R.raw.startsound, 1);
@@ -608,6 +607,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             final String filename = day + "_" + month + "_" + myTag + "_" + myTagpos + ".csv";
             final String fileName1 = "AllData.csv";
             Handler handler4 = new Handler();
+            final String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+            manualLocation = autoCompleteTextView.getText().toString();
+            if (manualLocation.equals("") || manualLocation == null)
+                manualLocation = "Not_specified";
             handler4.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -628,7 +631,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         }
 
                         public void onFinish() {
-                            button.setText("Processing!");
                             Toast.makeText(MainActivity.this, "Stopped Logging!", Toast.LENGTH_SHORT).show();
                             button.setEnabled(true);
                         }
@@ -638,7 +640,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     new CountDownTimer(120000, 100) {
 
                         public void onTick(long millis) {
-                            performTick();
+                            performTick(currentDateTimeString, manualLocation);
                         }
 
                         public void onFinish() {
@@ -676,13 +678,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    public void performTick() {
+    public void performTick(String currentDateTimeString, String manualLocation) {
         Long tsLong = System.currentTimeMillis() / 1000;
         String ts = tsLong.toString();
-        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-        manualLocation = autoCompleteTextView.getText().toString();
-        if (manualLocation.equals("") || manualLocation == null)
-            manualLocation = "Not_specified";
         String[] data = {ts
                 , currentDateTimeString
                 , String.valueOf(mAccelerometerReading[0])
