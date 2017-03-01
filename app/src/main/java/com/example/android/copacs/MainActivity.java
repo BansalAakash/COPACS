@@ -2,33 +2,24 @@ package com.example.android.copacs;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.location.Criteria;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.net.Uri;
-import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.PowerManager;
-import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -47,9 +38,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
-
 import java.io.File;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -63,59 +51,154 @@ import java.util.TimeZone;
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
-    private static final int REQUEST_ACCESS_FINE_LOCATION = 2;
-    private static final int REQUEST_ACCESS_COARSE_LOCATION = 3;
-    private static final String[] activities = {"Walking", "Sitting", "Elevator_Ascend", "Elevator_Descend", "Running",
-            "Driving", "Staircase_Ascend", "Staircase_descend", "Sleeping"};
-    private static final String[] positions = {"Hand", "Trouser", "Upper_pocket", "Stationary_object"};
+    //    private static final int REQUEST_ACCESS_FINE_LOCATION = 2;
+//    private static final int REQUEST_ACCESS_COARSE_LOCATION = 3;
+    private static final String[] activities = {
+            "Walking",
+            "Sitting",
+            "Elevator_Ascend",
+            "Elevator_Descend",
+            "Running",
+            "Driving",
+            "Staircase_Ascend",
+            "Staircase_descend",
+            "Sleeping"};
+
+    private static final String[] positions = {
+            "Hand",
+            "Trouser",
+            "Upper_pocket",
+            "Stationary_object"};
+
     private static String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
-    final float[] mrotationMatrix = new float[9];
-    final float[] morientationAngles = new float[3];
+    //    final float[] mrotationMatrix = new float[9];
+//    final float[] morientationAngles = new float[3];
     SensorManager sensorManager;
 
-    Sensor senAccelerometer, senMagnetic, senGyroscope, senLinearAcceleration, sensGravity, sensLight, senProximity;
-    int acceloremeterFlag = 0, magnetometerFlag = 0, gyroscopeFlag = 0, linearAccelerationFlag = 0,
-            gravityFlag = 0, lightFlag = 0, proximityFlag = 0;
-    private String[] locations = {"ABB1", "ABB2", "ABB3", "Sarojini", "Annapurna", "Gate_1", "Gate_2", "Gate_3"};
+    Sensor
+            senAccelerometer;
+//            senMagnetic,
+//            senGyroscope,
+//            senLinearAcceleration,
+//            sensGravity,
+//            sensLight,
+//            senProximity;
+
+    int
+            acceloremeterFlag = 0;
+//            magnetometerFlag = 0,
+//            gyroscopeFlag = 0,
+//            linearAccelerationFlag = 0,
+//            gravityFlag = 0,
+//            lightFlag = 0,
+//            proximityFlag = 0;
+
+    private String[] locations = {
+            "ABB1",
+            "ABB2",
+            "ABB3",
+            "Sarojini",
+            "Annapurna",
+            "Gate_1",
+            "Gate_2",
+            "Gate_3"};
+
     private float[] mAccelerometerReading = new float[3];
-    private float[] mMagnetometerReading = new float[3];
-    private float[] mGyroscopeReading = new float[3];
-    private float[] mLinearAccelerationReading = new float[3];
-    private float[] mGravityReading = new float[3];
-    private float mLightReading;
-    private float mProximityReading;
-    private TextView textView1, textView2, textView3, textView4, textView5, textView6, textView7, textView8, textView9,
-            textView10, textView11, textView12, textView13, textView14, textView15, textView16, textView17, textView18,
-            textView19, textView20, textView21, textView22, textView23, textView24, textView25, textView26, textView27,
-            textView28, textView29, rlareading, rlaheader, rgheader, rgreading, raheader, rareading, altiTextView, logTextView;
+    //    private float[] mMagnetometerReading = new float[3];
+//    private float[] mGyroscopeReading = new float[3];
+//    private float[] mLinearAccelerationReading = new float[3];
+//    private float[] mGravityReading = new float[3];
+//    private float mLightReading;
+//    private float mProximityReading;
+    private TextView
+            accelerometer_x_TextView,
+            accelerometer_y_TextView,
+            acclelerometer_z_TextView,
+    //            magnetometer_x_TextView,
+//            magnetometer_y_TextView,
+//            magnetometer_z_TextView,
+//            lightTextView,
+//            orientation_X_TextView,
+//            orientation_Y_TextView,
+//            orientation_Z_TextView,
+//            proximityTextView,
+//            latitudeTextView,
+//            longitudeTextView,
+//            batteryLevelTextView,
+//            speedTextView,
+//            batteryTemperatureTextView,
+//            gravity_x_TextView,
+//            gravity_y_TextView,
+//            gravity_z_TextView,
+//            gyroscope_x_TextView,
+//            gyroscope_y_TextView,
+//            gyroscope_z_TextView,
+//            gravityHeader_TextView,
+//            gyroHeader_TextView,
+//            linear_x_TextView,
+//            linear_y_TextView,
+//            linear_z_TextView,
+//            linear_acc_header_TextView,
+//            notPresentTextView,
+//            resultantLinearAccelerationReadingTextView,
+//            resultantLinearAccelerationHeaderTextView,
+//            resultantGravityHeaderTextView,
+//            resultantGravityreadingTextView,
+    resultantAccelerationHeaderTextView,
+            resultantAcceleratiobReadingTextView,
+            altitudeTextView,
+            logTextView;
+
     private Button button;
-    private MenuItem logButton, deleteButton;
+    private
+    MenuItem
+            logButton,
+            deleteButton;
+
     private String myTag = "";
-    private int buttonFlag = 0, batteryLevel;
-    private float batteryTemperature;
-    private LocationManager locationManager;
-    private double latitude, longitude, speed;
-    private Location lastKnownLocation;
-    private BroadcastReceiver mBatInfoReceiver;
+    private int
+//            batteryLevel,
+            buttonFlag = 0;
+
+//    private float batteryTemperature;
+//    private LocationManager locationManager;
+//    private double
+//            latitude,
+//            longitude,
+//            speed;
+
+    //    private Location lastKnownLocation;
+//    private BroadcastReceiver mBatInfoReceiver;
     private String notPresent = "";
-    private ArrayAdapter<String> adapter, adapter1;
+    private ArrayAdapter<String> adapter1;
     private String myTagpos;
-    private Spinner activitiesSpinner, phonePositionSpinner;
-    private double resultantLinearAcceleration, resultantAccelerometer, resultantGravity;
+    private Spinner
+            activitiesSpinner,
+            phonePositionSpinner;
+
+    private double
+            resultantAccelerometer;
+//            resultantLinearAcceleration,
+//            resultantGravity;
+
     private int currentInterval;
-    private LocationListener locationListener;
-    private double altitude;
+    //    private LocationListener locationListener;
+//    private double altitude;
     private AutoCompleteTextView autoCompleteTextView;
     private String manualLocation;
     private Menu menu;
     private int checkUniformity = 0;
     private SoundPool mySoundPool;
-    private int mSoundIdInit, mSoundIdtart, mSoundIdStop;
+    private int
+            mSoundIdInit,
+            mSoundIdtart,
+            mSoundIdStop;
+
     private AudioManager audioManager;
     private Calendar calender;
     private int day;
@@ -125,16 +208,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private PowerManager powerManager;
     private PowerManager.WakeLock wakeLock;
     private CheckBox checkBox;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
 
     public static void verifyStoragePermissions(Activity activity) {
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        int permission1 = ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION);
-        int permission2 = ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION);
+//        int permission1 = ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION);
+//        int permission2 = ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_COARSE_LOCATION);
 
         if (permission != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(
@@ -143,21 +221,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     REQUEST_EXTERNAL_STORAGE
             );
         }
-        if (permission1 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    activity,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_ACCESS_FINE_LOCATION
-            );
-        }
+//        if (permission1 != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(
+//                    activity,
+//                    PERMISSIONS_STORAGE,
+//                    REQUEST_ACCESS_FINE_LOCATION
+//            );
+//        }
 
-        if (permission2 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(
-                    activity,
-                    PERMISSIONS_STORAGE,
-                    REQUEST_ACCESS_COARSE_LOCATION
-            );
-        }
+//        if (permission2 != PackageManager.PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(
+//                    activity,
+//                    PERMISSIONS_STORAGE,
+//                    REQUEST_ACCESS_COARSE_LOCATION
+//            );
+//        }
     }
 
     @Override
@@ -185,12 +263,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                deleteFileClick(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data"));
+                                deleteFileClick(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data Lite"));
                                 Toast.makeText(MainActivity.this, "Folder deleted!", Toast.LENGTH_SHORT).show();
                             }
                         })
                         .setNegativeButton(android.R.string.no, null).show();
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data").mkdir();
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data Lite").mkdir();
                 break;
         }
         return true;
@@ -202,43 +280,43 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         verifyStoragePermissions(MainActivity.this);
-        textView1 = (TextView) findViewById(R.id.text1);
-        textView2 = (TextView) findViewById(R.id.text2);
-        textView3 = (TextView) findViewById(R.id.text3);
-        textView4 = (TextView) findViewById(R.id.text4);
-        textView5 = (TextView) findViewById(R.id.text5);
-        textView6 = (TextView) findViewById(R.id.text6);
-        textView7 = (TextView) findViewById(R.id.lightTextView);
-        textView8 = (TextView) findViewById(R.id.orientation_x);
-        textView9 = (TextView) findViewById(R.id.orientation_y);
-        textView10 = (TextView) findViewById(R.id.orientation_z);
-        textView11 = (TextView) findViewById(R.id.proximityTextView);
-        textView12 = (TextView) findViewById(R.id.latitudeTextView);
-        textView13 = (TextView) findViewById(R.id.longitudeTextView);
-        textView14 = (TextView) findViewById(R.id.batteryLevelTextView);
-        textView15 = (TextView) findViewById(R.id.speedTextView);
-        textView16 = (TextView) findViewById(R.id.batteryTemperatureTextView);
-        textView17 = (TextView) findViewById(R.id.gravity_x);
-        textView18 = (TextView) findViewById(R.id.gravity_y);
-        textView19 = (TextView) findViewById(R.id.gravity_z);
-        textView20 = (TextView) findViewById(R.id.gyro_x);
-        textView21 = (TextView) findViewById(R.id.gyro_y);
-        textView22 = (TextView) findViewById(R.id.gyro_z);
-        textView23 = (TextView) findViewById(R.id.gravity_header);
-        textView24 = (TextView) findViewById(R.id.gyro_header);
-        textView25 = (TextView) findViewById(R.id.linear_x);
-        textView26 = (TextView) findViewById(R.id.linear_y);
-        textView27 = (TextView) findViewById(R.id.linear_z);
-        textView28 = (TextView) findViewById(R.id.linear_acc_header);
-        textView29 = (TextView) findViewById(R.id.notPresentTextView);
+        accelerometer_x_TextView = (TextView) findViewById(R.id.Accelerometer_x);
+        accelerometer_y_TextView = (TextView) findViewById(R.id.Accelerometer_y);
+        acclelerometer_z_TextView = (TextView) findViewById(R.id.Accelerometer_z);
+//        magnetometer_x_TextView = (TextView) findViewById(R.id.Magnetometer_x);
+//        magnetometer_y_TextView = (TextView) findViewById(R.id.Magnetometer_y);
+//        magnetometer_z_TextView = (TextView) findViewById(R.id.Magnetometer_z);
+//        lightTextView = (TextView) findViewById(R.id.lightTextView);
+//        orientation_X_TextView = (TextView) findViewById(R.id.orientation_x);
+//        orientation_Y_TextView = (TextView) findViewById(R.id.orientation_y);
+//        orientation_Z_TextView = (TextView) findViewById(R.id.orientation_z);
+//        proximityTextView = (TextView) findViewById(R.id.proximityTextView);
+//        latitudeTextView = (TextView) findViewById(R.id.latitudeTextView);
+//        longitudeTextView = (TextView) findViewById(R.id.longitudeTextView);
+//        batteryLevelTextView = (TextView) findViewById(R.id.batteryLevelTextView);
+//        speedTextView = (TextView) findViewById(R.id.speedTextView);
+//        batteryTemperatureTextView = (TextView) findViewById(R.id.batteryTemperatureTextView);
+//        gravity_x_TextView = (TextView) findViewById(R.id.gravity_x);
+//        gravity_y_TextView = (TextView) findViewById(R.id.gravity_y);
+//        gravity_z_TextView = (TextView) findViewById(R.id.gravity_z);
+//        gyroscope_x_TextView = (TextView) findViewById(R.id.gyro_x);
+//        gyroscope_y_TextView = (TextView) findViewById(R.id.gyro_y);
+//        gyroscope_z_TextView = (TextView) findViewById(R.id.gyro_z);
+//        gravityHeader_TextView = (TextView) findViewById(R.id.gravity_header);
+//        gyroHeader_TextView = (TextView) findViewById(R.id.gyro_header);
+//        linear_x_TextView = (TextView) findViewById(R.id.linear_x);
+//        linear_y_TextView = (TextView) findViewById(R.id.linear_y);
+//        linear_z_TextView = (TextView) findViewById(R.id.linear_z);
+//        linear_acc_header_TextView = (TextView) findViewById(R.id.linear_acc_header);
+//        notPresentTextView = (TextView) findViewById(R.id.notPresentTextView);
         logTextView = (TextView) findViewById(R.id.logTextView);
-        raheader = (TextView) findViewById(R.id.raHeader);
-        rareading = (TextView) findViewById(R.id.raReading);
-        rlaheader = (TextView) findViewById(R.id.rla_header);
-        rlareading = (TextView) findViewById(R.id.rla_reading);
-        rgheader = (TextView) findViewById(R.id.rgheader);
-        rgreading = (TextView) findViewById(R.id.rgReading);
-        altiTextView = (TextView) findViewById(R.id.altitudeTextView);
+        resultantAccelerationHeaderTextView = (TextView) findViewById(R.id.raHeader);
+        resultantAcceleratiobReadingTextView = (TextView) findViewById(R.id.raReading);
+//        resultantLinearAccelerationHeaderTextView = (TextView) findViewById(R.id.rla_header);
+//        resultantLinearAccelerationReadingTextView = (TextView) findViewById(R.id.rla_reading);
+//        resultantGravityHeaderTextView = (TextView) findViewById(R.id.rgheader);
+//        resultantGravityreadingTextView = (TextView) findViewById(R.id.rgReading);
+//        altitudeTextView = (TextView) findViewById(R.id.altitudeTextView);
         audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         checkBox = (CheckBox) findViewById(R.id.sound);
         if (checkBox.isChecked()) {
@@ -254,7 +332,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         dataArray = new ArrayList<>();
         activitiesSpinner = (Spinner) findViewById(R.id.spinner1);
         phonePositionSpinner = (Spinner) findViewById(R.id.spinner2);
-        currentInterval = 50;
+        currentInterval = 10000;
         autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, locations);
         powerManager = (PowerManager) getSystemService(POWER_SERVICE);
@@ -281,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         } else {
             mySoundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 1);
         }
-        File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data");
+        File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data Lite");
         if (!folder.exists()) {
             folder.mkdir();
         }
@@ -298,71 +376,71 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         });
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        boolean enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if (!enabled) {
-            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-            startActivity(intent);
-        }
-        locationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-                // Called when a new location is found by the network location provider.
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
-                speed = location.getSpeed();
-                textView12.setText("Latitude : " + String.valueOf(latitude));
-                textView13.setText("Longitude : " + String.valueOf(longitude));
-                textView15.setText("Speed : " + String.valueOf(speed));
-                altiTextView.setText("Altitude : " + String.valueOf(altitude));
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-            }
-
-            public void onProviderEnabled(String provider) {
-                Toast.makeText(MainActivity.this, "Provider is enabled", Toast.LENGTH_SHORT).show();
-            }
-
-            public void onProviderDisabled(String provider) {
-                Toast.makeText(MainActivity.this, "COPACS needs location services to be up and running!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                startActivity(intent);
-            }
-        };
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0.5f, locationListener);
-        Location location = locationManager
-                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        if (location != null) {
-            latitude = location.getLatitude();
-            longitude = location.getLongitude();
-            altitude = location.getAltitude();
-            speed = location.getSpeed();
-        }
-        Criteria crta = new Criteria();
-        crta.setAccuracy(Criteria.ACCURACY_FINE);
-        crta.setAltitudeRequired(true);
-        crta.setSpeedRequired(true);
-        crta.setSpeedAccuracy(Criteria.ACCURACY_HIGH);
-        crta.setPowerRequirement(Criteria.POWER_LOW);
-
-        lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        latitude = 0;
-        longitude = 0;
-        speed = 0;
-        altitude = 0;
+//        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+//        boolean enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+//        if (!enabled) {
+//            Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//            startActivity(intent);
+//        }
+//        locationListener = new LocationListener() {
+//            public void onLocationChanged(Location location) {
+//                // Called when a new location is found by the network location provider.
+//                latitude = location.getLatitude();
+//                longitude = location.getLongitude();
+//                speed = location.getSpeed();
+//                latitudeTextView.setText("Latitude : " + String.valueOf(latitude));
+//                longitudeTextView.setText("Longitude : " + String.valueOf(longitude));
+//                speedTextView.setText("Speed : " + String.valueOf(speed));
+//                altitudeTextView.setText("Altitude : " + String.valueOf(altitude));
+//            }
+//
+//            public void onStatusChanged(String provider, int status, Bundle extras) {
+//            }
+//
+//            public void onProviderEnabled(String provider) {
+//                Toast.makeText(MainActivity.this, "Provider is enabled", Toast.LENGTH_SHORT).show();
+//            }
+//
+//            public void onProviderDisabled(String provider) {
+//                Toast.makeText(MainActivity.this, "COPACS needs location services to be up and running!", Toast.LENGTH_SHORT).show();
+//                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//                startActivity(intent);
+//            }
+//        };
+//        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0.5f, locationListener);
+//        Location location = locationManager
+//                .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//        if (location != null) {
+//            latitude = location.getLatitude();
+//            longitude = location.getLongitude();
+//            altitude = location.getAltitude();
+//            speed = location.getSpeed();
+//        }
+//        Criteria crta = new Criteria();
+//        crta.setAccuracy(Criteria.ACCURACY_FINE);
+//        crta.setAltitudeRequired(true);
+//        crta.setSpeedRequired(true);
+//        crta.setSpeedAccuracy(Criteria.ACCURACY_HIGH);
+//        crta.setPowerRequirement(Criteria.POWER_LOW);
+//
+//        lastKnownLocation = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//        latitude = 0;
+//        longitude = 0;
+//        speed = 0;
+//        altitude = 0;
         resultantAccelerometer = 0;
-        resultantGravity = 0;
-        resultantLinearAcceleration = 0;
-        if (lastKnownLocation != null) {
-            latitude = lastKnownLocation.getLatitude();
-            longitude = lastKnownLocation.getLongitude();
-            speed = lastKnownLocation.getSpeed();
-            altitude = lastKnownLocation.getAltitude();
-        }
-        textView12.setText("Latitude(Last known) : " + String.valueOf(latitude));
-        textView13.setText("Longitude(Last known) : " + String.valueOf(longitude));
-        textView15.setText("Speed(Last known) : " + String.valueOf(speed));
-        altiTextView.setText("Altitude(last known) : " + String.valueOf(altitude));
+//        resultantGravity = 0;
+//        resultantLinearAcceleration = 0;
+//        if (lastKnownLocation != null) {
+//            latitude = lastKnownLocation.getLatitude();
+//            longitude = lastKnownLocation.getLongitude();
+//            speed = lastKnownLocation.getSpeed();
+//            altitude = lastKnownLocation.getAltitude();
+//        }
+//        latitudeTextView.setText("Latitude(Last known) : " + String.valueOf(latitude));
+//        longitudeTextView.setText("Longitude(Last known) : " + String.valueOf(longitude));
+//        speedTextView.setText("Speed(Last known) : " + String.valueOf(speed));
+//        altitudeTextView.setText("Altitude(last known) : " + String.valueOf(altitude));
 
         List<Sensor> sensors = sensorManager.getSensorList(Sensor.TYPE_ALL);
         for (Sensor sensor : sensors) {
@@ -370,12 +448,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
         senAccelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        senMagnetic = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        senGyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        senLinearAcceleration = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
-        sensGravity = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
-        sensLight = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        senProximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+//        senMagnetic = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+//        senGyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
+//        senLinearAcceleration = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
+//        sensGravity = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
+//        sensLight = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
+//        senProximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_list_item_1, activities);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -386,188 +464,105 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         phonePositionSpinner.setAdapter(adapter1);
 
-        Arrays.fill(mMagnetometerReading, 0);
         Arrays.fill(mAccelerometerReading, 0);
-        Arrays.fill(mGyroscopeReading, 0);
-        Arrays.fill(mLinearAccelerationReading, 0);
-        Arrays.fill(mGravityReading, 0);
-        mLightReading = 0;
-        mProximityReading = 0;
-
-        if (senMagnetic != null) {
-            sensorManager.registerListener(this, senMagnetic, currentInterval);
-            magnetometerFlag = 1;
-        } else
-            notPresent += "No magnetic field sensor!\n";
-
-        if (senProximity != null) {
-            sensorManager.registerListener(this, senProximity, currentInterval);
-            proximityFlag = 1;
-        } else
-            notPresent += "No Proximity sensor!\n";
+//        Arrays.fill(mMagnetometerReading, 0);
+//        Arrays.fill(mGyroscopeReading, 0);
+//        Arrays.fill(mLinearAccelerationReading, 0);
+//        Arrays.fill(mGravityReading, 0);
+//        mLightReading = 0;
+//        mProximityReading = 0;
+//
+//        if (senMagnetic != null) {
+//            sensorManager.registerListener(this, senMagnetic, currentInterval);
+//            magnetometerFlag = 1;
+//        } else
+//            notPresent += "No magnetic field sensor!\n";
+//
+//        if (senProximity != null) {
+//            sensorManager.registerListener(this, senProximity, currentInterval);
+//            proximityFlag = 1;
+//        } else
+//            notPresent += "No Proximity sensor!\n";
 
         if (senAccelerometer != null) {
             sensorManager.registerListener(this, senAccelerometer, currentInterval);
             acceloremeterFlag = 1;
         } else {
             notPresent += "No Accelerometer!\n";
-            rareading.setVisibility(View.GONE);
-            raheader.setVisibility(View.GONE);
+            resultantAcceleratiobReadingTextView.setVisibility(View.GONE);
+            resultantAccelerationHeaderTextView.setVisibility(View.GONE);
         }
 
-        if (senGyroscope != null) {
-            gyroscopeFlag = 1;
-            sensorManager.registerListener(this, senGyroscope, currentInterval);
-        } else {
-            textView20.setVisibility(View.GONE);
-            textView21.setVisibility(View.GONE);
-            textView22.setVisibility(View.GONE);
-            textView24.setVisibility(View.GONE);
-            notPresent += "No gyroscope sensor!\n";
-        }
+//        if (senGyroscope != null) {
+//            gyroscopeFlag = 1;
+//            sensorManager.registerListener(this, senGyroscope, currentInterval);
+//        } else {
+//            gyroscope_x_TextView.setVisibility(View.GONE);
+//            gyroscope_y_TextView.setVisibility(View.GONE);
+//            gyroscope_z_TextView.setVisibility(View.GONE);
+//            gyroHeader_TextView.setVisibility(View.GONE);
+//            notPresent += "No gyroscope sensor!\n";
+//        }
+//
+//        if (senLinearAcceleration != null) {
+//            linearAccelerationFlag = 1;
+//            sensorManager.registerListener(this, senLinearAcceleration, currentInterval);
+//        } else {
+//            linear_x_TextView.setVisibility(View.GONE);
+//            linear_y_TextView.setVisibility(View.GONE);
+//            linear_z_TextView.setVisibility(View.GONE);
+//            linear_acc_header_TextView.setVisibility(View.GONE);
+//            resultantLinearAccelerationHeaderTextView.setVisibility(View.GONE);
+//            resultantLinearAccelerationReadingTextView.setVisibility(View.GONE);
+//            notPresent += "No linear acceleration sensor!\n";
+//        }
+//        if (sensGravity != null) {
+//            gravityFlag = 1;
+//            sensorManager.registerListener(this, sensGravity, currentInterval);
+//        } else {
+//            gravity_x_TextView.setVisibility(View.GONE);
+//            gravity_y_TextView.setVisibility(View.GONE);
+//            gravity_z_TextView.setVisibility(View.GONE);
+//            gravityHeader_TextView.setVisibility(View.GONE);
+//            resultantGravityHeaderTextView.setVisibility(View.GONE);
+//            resultantGravityreadingTextView.setVisibility(View.GONE);
+//            notPresent += "No gravity sensor!\n";
+//        }
+//        if (sensLight != null) {
+//            lightFlag = 1;
+//            sensorManager.registerListener(this, sensLight, currentInterval);
+//        } else
+//            notPresent += "No light sensor!\n";
+//
+//
+//        notPresentTextView.setText(notPresent);
 
-        if (senLinearAcceleration != null) {
-            linearAccelerationFlag = 1;
-            sensorManager.registerListener(this, senLinearAcceleration, currentInterval);
-        } else {
-            textView25.setVisibility(View.GONE);
-            textView26.setVisibility(View.GONE);
-            textView27.setVisibility(View.GONE);
-            textView28.setVisibility(View.GONE);
-            rlaheader.setVisibility(View.GONE);
-            rlareading.setVisibility(View.GONE);
-            notPresent += "No linear acceleration sensor!\n";
-        }
-        if (sensGravity != null) {
-            gravityFlag = 1;
-            sensorManager.registerListener(this, sensGravity, currentInterval);
-        } else {
-            textView17.setVisibility(View.GONE);
-            textView18.setVisibility(View.GONE);
-            textView19.setVisibility(View.GONE);
-            textView23.setVisibility(View.GONE);
-            rgheader.setVisibility(View.GONE);
-            rgreading.setVisibility(View.GONE);
-            notPresent += "No gravity sensor!\n";
-        }
-        if (sensLight != null) {
-            lightFlag = 1;
-            sensorManager.registerListener(this, sensLight, currentInterval);
-        } else
-            notPresent += "No light sensor!\n";
-
-
-        textView29.setText(notPresent);
-
-        if (Build.VERSION.SDK_INT >= 23 &&
-                ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
+//        if (Build.VERSION.SDK_INT >= 23 &&
+//                ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+//                ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            return;
+//        }
 
         button = (Button) findViewById(R.id.button1);
         button.setText("Start logging!");
+    }
 
-        mBatInfoReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context ctxt, Intent intent) {
-                batteryLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
-                batteryTemperature = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) / 10);
-                textView14.setText("Battery Level : " + String.valueOf(batteryLevel) + "%");
-                textView16.setText("Battery Temperature : " + String.valueOf(batteryTemperature) + " °C");
-            }
-        };
+//        mBatInfoReceiver = new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context ctxt, Intent intent) {
+//                batteryLevel = intent.getIntExtra(BatteryManager.EXTRA_LEVEL, 0);
+//                batteryTemperature = ((float) intent.getIntExtra(BatteryManager.EXTRA_TEMPERATURE, 0) / 10);
+//                batteryLevelTextView.setText("Battery Level : " + String.valueOf(batteryLevel) + "%");
+//                batteryTemperatureTextView.setText("Battery Temperature : " + String.valueOf(batteryTemperature) + " °C");
+//            }
+//        };
 
 // Register the listener with the Location Manager to receive location updates
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-        this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
-    }
+//        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+//        this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+//        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+//    }
 
-    @Override
-    public void onSensorChanged(SensorEvent sensorEvent) {
-        if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER || sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-            SensorManager.getRotationMatrix(mrotationMatrix, null,
-                    mAccelerometerReading, mMagnetometerReading);
-            SensorManager.getOrientation(mrotationMatrix, morientationAngles);
-            morientationAngles[0] = (float) Math.toDegrees(morientationAngles[0]);
-            morientationAngles[1] = (float) Math.toDegrees(morientationAngles[1]);
-            morientationAngles[2] = (float) Math.toDegrees(morientationAngles[2]);
-            textView8.setText(String.valueOf(morientationAngles[0]));
-            textView9.setText(String.valueOf(morientationAngles[1]));
-            textView10.setText(String.valueOf(morientationAngles[2]));
-        }
-        if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            mAccelerometerReading[0] = sensorEvent.values[0];
-            mAccelerometerReading[1] = sensorEvent.values[1];
-            mAccelerometerReading[2] = sensorEvent.values[2];
-            resultantAccelerometer = Math.sqrt(Math.pow(mAccelerometerReading[0], 2) + Math.pow(mAccelerometerReading[1], 2)
-                    + Math.pow(mAccelerometerReading[2], 2));
-            rareading.setText(String.valueOf(resultantAccelerometer));
-            textView1.setText(String.valueOf(mAccelerometerReading[0]));
-            textView2.setText(String.valueOf(mAccelerometerReading[1]));
-            textView3.setText(String.valueOf(mAccelerometerReading[2]));
-
-        } else if (sensorEvent.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
-            mLinearAccelerationReading[0] = sensorEvent.values[0];
-            mLinearAccelerationReading[1] = sensorEvent.values[1];
-            mLinearAccelerationReading[2] = sensorEvent.values[2];
-            resultantLinearAcceleration = Math.sqrt(Math.pow(mLinearAccelerationReading[0], 2) +
-                    Math.pow(mLinearAccelerationReading[1], 2) + Math.pow(mLinearAccelerationReading[2], 2));
-            if (linearAccelerationFlag == 1) {
-                textView25.setText(String.valueOf(mLinearAccelerationReading[0]));
-                textView26.setText(String.valueOf(mLinearAccelerationReading[1]));
-                textView27.setText(String.valueOf(mLinearAccelerationReading[2]));
-                rlareading.setText(String.valueOf(resultantLinearAcceleration));
-            }
-
-        } else if (sensorEvent.sensor.getType() == Sensor.TYPE_GRAVITY) {
-            mGravityReading[0] = sensorEvent.values[0];
-            mGravityReading[1] = sensorEvent.values[1];
-            mGravityReading[2] = sensorEvent.values[2];
-            resultantGravity = Math.sqrt(Math.pow(mGravityReading[0], 2) + Math.pow(mGravityReading[1], 2)
-                    + Math.pow(mGravityReading[2], 2));
-            if (gravityFlag == 1) {
-                textView17.setText(String.valueOf(mGravityReading[0]));
-                textView18.setText(String.valueOf(mGravityReading[1]));
-                textView19.setText(String.valueOf(mGravityReading[2]));
-                rgreading.setText(String.valueOf(resultantGravity));
-            }
-
-        } else if (sensorEvent.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
-            mGyroscopeReading[0] = sensorEvent.values[0];
-            mGyroscopeReading[1] = sensorEvent.values[1];
-            mGyroscopeReading[2] = sensorEvent.values[2];
-            if (gyroscopeFlag == 1) {
-                textView20.setText(String.valueOf(mGyroscopeReading[0]));
-                textView21.setText(String.valueOf(mGyroscopeReading[1]));
-                textView22.setText(String.valueOf(mGyroscopeReading[2]));
-            }
-
-        } else if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-            mMagnetometerReading[0] = sensorEvent.values[0];
-            mMagnetometerReading[1] = sensorEvent.values[1];
-            mMagnetometerReading[2] = sensorEvent.values[2];
-
-            textView4.setText(String.valueOf(mMagnetometerReading[0]));
-            textView5.setText(String.valueOf(mMagnetometerReading[1]));
-            textView6.setText(String.valueOf(mMagnetometerReading[2]));
-
-        } else if (sensorEvent.sensor.getType() == Sensor.TYPE_LIGHT) {
-            mLightReading = sensorEvent.values[0];
-            textView7.setText(String.valueOf(mLightReading));
-        } else if (sensorEvent.sensor.getType() == Sensor.TYPE_PROXIMITY) {
-            mProximityReading = sensorEvent.values[0];
-            textView11.setText(String.valueOf(mProximityReading));
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int i) {
-    }
-//
 //    @Override
 //    protected void onResume() {
 //        super.onResume();
@@ -603,7 +598,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 //    }
 
     public void logFileClick() {
-        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data/").toString();
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data Lite/").toString();
 
         Uri selectedUri = Uri.parse(path);
         Intent intent = new Intent(Intent.ACTION_VIEW);
@@ -734,35 +729,34 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 , String.valueOf(mAccelerometerReading[1])
                 , String.valueOf(mAccelerometerReading[2])
                 , String.valueOf(resultantAccelerometer)
-                , String.valueOf(mMagnetometerReading[0])
-                , String.valueOf(mMagnetometerReading[1])
-                , String.valueOf(mMagnetometerReading[2])
-                , String.valueOf(mLightReading)
-                , String.valueOf(morientationAngles[0])
-                , String.valueOf(morientationAngles[1])
-                , String.valueOf(morientationAngles[2])
-                , String.valueOf(mProximityReading)
-                , String.valueOf(latitude)
-                , String.valueOf(longitude)
-                , String.valueOf(speed)
-                , String.valueOf(altitude)
-                , String.valueOf(batteryLevel)
-                , String.valueOf(batteryTemperature)
-                , String.valueOf(mGravityReading[0])
-                , String.valueOf(mGravityReading[1])
-                , String.valueOf(mGravityReading[2])
-                , String.valueOf(resultantGravity)
-                , String.valueOf(mGyroscopeReading[0])
-                , String.valueOf(mGyroscopeReading[1])
-                , String.valueOf(mGyroscopeReading[2])
-                , String.valueOf(mLinearAccelerationReading[0])
-                , String.valueOf(mLinearAccelerationReading[1])
-                , String.valueOf(mLinearAccelerationReading[2])
-                , String.valueOf(resultantLinearAcceleration)
+//                , String.valueOf(mMagnetometerReading[0])
+//                , String.valueOf(mMagnetometerReading[1])
+//                , String.valueOf(mMagnetometerReading[2])
+//                , String.valueOf(mLightReading)
+//                , String.valueOf(morientationAngles[0])
+//                , String.valueOf(morientationAngles[1])
+//                , String.valueOf(morientationAngles[2])
+//                , String.valueOf(mProximityReading)
+//                , String.valueOf(latitude)
+//                , String.valueOf(longitude)
+//                , String.valueOf(speed)
+//                , String.valueOf(altitude)
+//                , String.valueOf(batteryLevel)
+//                , String.valueOf(batteryTemperature)
+//                , String.valueOf(mGravityReading[0])
+//                , String.valueOf(mGravityReading[1])
+//                , String.valueOf(mGravityReading[2])
+//                , String.valueOf(resultantGravity)
+//                , String.valueOf(mGyroscopeReading[0])
+//                , String.valueOf(mGyroscopeReading[1])
+//                , String.valueOf(mGyroscopeReading[2])
+//                , String.valueOf(mLinearAccelerationReading[0])
+//                , String.valueOf(mLinearAccelerationReading[1])
+//                , String.valueOf(mLinearAccelerationReading[2])
+//                , String.valueOf(resultantLinearAcceleration)
                 , myTag
                 , myTagpos
-                , manualLocation
-                , String.valueOf(currentInterval)};
+                , manualLocation};
         checkUniformity += 1;
         dataArray.add(data);
     }
@@ -773,5 +767,89 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if (vol < maxvol)
             return 1;
         else return 0;
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+//        if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER || sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+//            SensorManager.getRotationMatrix(mrotationMatrix, null,
+//                    mAccelerometerReading, mMagnetometerReading);
+//            SensorManager.getOrientation(mrotationMatrix, morientationAngles);
+//            morientationAngles[0] = (float) Math.toDegrees(morientationAngles[0]);
+//            morientationAngles[1] = (float) Math.toDegrees(morientationAngles[1]);
+//            morientationAngles[2] = (float) Math.toDegrees(morientationAngles[2]);
+//            orientation_X_TextView.setText(String.valueOf(morientationAngles[0]));
+//            orientation_Y_TextView.setText(String.valueOf(morientationAngles[1]));
+//            orientation_Z_TextView.setText(String.valueOf(morientationAngles[2]));
+//        }
+        if (sensorEvent.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            mAccelerometerReading[0] = sensorEvent.values[0];
+            mAccelerometerReading[1] = sensorEvent.values[1];
+            mAccelerometerReading[2] = sensorEvent.values[2];
+            resultantAccelerometer = Math.sqrt(Math.pow(mAccelerometerReading[0], 2) + Math.pow(mAccelerometerReading[1], 2)
+                    + Math.pow(mAccelerometerReading[2], 2));
+            resultantAcceleratiobReadingTextView.setText(String.valueOf(resultantAccelerometer));
+            accelerometer_x_TextView.setText(String.valueOf(mAccelerometerReading[0]));
+            accelerometer_y_TextView.setText(String.valueOf(mAccelerometerReading[1]));
+            acclelerometer_z_TextView.setText(String.valueOf(mAccelerometerReading[2]));
+
+        }
+//        else if (sensorEvent.sensor.getType() == Sensor.TYPE_LINEAR_ACCELERATION) {
+//            mLinearAccelerationReading[0] = sensorEvent.values[0];
+//            mLinearAccelerationReading[1] = sensorEvent.values[1];
+//            mLinearAccelerationReading[2] = sensorEvent.values[2];
+//            resultantLinearAcceleration = Math.sqrt(Math.pow(mLinearAccelerationReading[0], 2) +
+//                    Math.pow(mLinearAccelerationReading[1], 2) + Math.pow(mLinearAccelerationReading[2], 2));
+//            if (linearAccelerationFlag == 1) {
+//                linear_x_TextView.setText(String.valueOf(mLinearAccelerationReading[0]));
+//                linear_y_TextView.setText(String.valueOf(mLinearAccelerationReading[1]));
+//                linear_z_TextView.setText(String.valueOf(mLinearAccelerationReading[2]));
+//                resultantLinearAccelerationReadingTextView.setText(String.valueOf(resultantLinearAcceleration));
+//            }
+//
+//        } else if (sensorEvent.sensor.getType() == Sensor.TYPE_GRAVITY) {
+//            mGravityReading[0] = sensorEvent.values[0];
+//            mGravityReading[1] = sensorEvent.values[1];
+//            mGravityReading[2] = sensorEvent.values[2];
+//            resultantGravity = Math.sqrt(Math.pow(mGravityReading[0], 2) + Math.pow(mGravityReading[1], 2)
+//                    + Math.pow(mGravityReading[2], 2));
+//            if (gravityFlag == 1) {
+//                gravity_x_TextView.setText(String.valueOf(mGravityReading[0]));
+//                gravity_y_TextView.setText(String.valueOf(mGravityReading[1]));
+//                gravity_z_TextView.setText(String.valueOf(mGravityReading[2]));
+//                resultantGravityreadingTextView.setText(String.valueOf(resultantGravity));
+//            }
+//
+//        } else if (sensorEvent.sensor.getType() == Sensor.TYPE_GYROSCOPE) {
+//            mGyroscopeReading[0] = sensorEvent.values[0];
+//            mGyroscopeReading[1] = sensorEvent.values[1];
+//            mGyroscopeReading[2] = sensorEvent.values[2];
+//            if (gyroscopeFlag == 1) {
+//                gyroscope_x_TextView.setText(String.valueOf(mGyroscopeReading[0]));
+//                gyroscope_y_TextView.setText(String.valueOf(mGyroscopeReading[1]));
+//                gyroscope_z_TextView.setText(String.valueOf(mGyroscopeReading[2]));
+//            }
+//
+//        } else if (sensorEvent.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+//            mMagnetometerReading[0] = sensorEvent.values[0];
+//            mMagnetometerReading[1] = sensorEvent.values[1];
+//            mMagnetometerReading[2] = sensorEvent.values[2];
+//
+//            magnetometer_x_TextView.setText(String.valueOf(mMagnetometerReading[0]));
+//            magnetometer_y_TextView.setText(String.valueOf(mMagnetometerReading[1]));
+//            magnetometer_z_TextView.setText(String.valueOf(mMagnetometerReading[2]));
+//
+//        } else if (sensorEvent.sensor.getType() == Sensor.TYPE_LIGHT) {
+//            mLightReading = sensorEvent.values[0];
+//            lightTextView.setText(String.valueOf(mLightReading));
+//        } else if (sensorEvent.sensor.getType() == Sensor.TYPE_PROXIMITY) {
+//            mProximityReading = sensorEvent.values[0];
+//            proximityTextView.setText(String.valueOf(mProximityReading));
+//        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
     }
 }

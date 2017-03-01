@@ -33,7 +33,7 @@ class BigComputationTask extends AsyncTask {
         this.filename = fileName;
         this.fileName1 = fileName1;
         this.mainContext = context;
-        this.path1 = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data").toString();
+        this.path1 = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data Lite").toString();
         this.view = view;
         this.activity1 = activity2;
     }
@@ -42,7 +42,7 @@ class BigComputationTask extends AsyncTask {
     protected Object doInBackground(Object[] params) {
         File file = new File(path1, filename);
         File file1 = new File(path1, fileName1);
-        File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data");
+        File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data Lite");
         if (!folder.exists()) {
             folder.mkdir();
             Log.d(BigComputationTask.class.toString(), "Folder created!");
@@ -79,12 +79,42 @@ class BigComputationTask extends AsyncTask {
         }
         csvWriter = new CSVWriter(mFileWriter);
         csvWriter1 = new CSVWriter(mFileWriter1);
-        String[] header = {"Timestamp", "Date_Time", "Accelerometer_x", "Accelerometer_y", "Accelerometer_z", "Resultant Accelerometer",
-                "Magnetometer_x", "Magnetometer_y", "Magnetometer_z", "Light", "Orientation(Azimuth)", "Orientation(Pitch)",
-                "Orientation(Roll)", "Proximity", "Latitude", "Longitude", "Speed(GPS)", "Altitude", "Battery level(percent)", "Battery Temperature(celsius)",
-                "Gravity_x", "Gravity_y", "Gravity_z", "Resultant_gravity", "Gyroscope_x", "Gyroscope_y", "Gyroscope_z", "Linear_acceleration_x",
-                "Linear_acceleration_y", "Linear_acceleration_z", "Resultant_linear_acceleration", "Activity", "Device position"
-                , "Location", "Interval"};
+        String[] header = {
+                "Timestamp",
+                "Date_Time",
+                "Accelerometer_x",
+                "Accelerometer_y",
+                "Accelerometer_z",
+                "Resultant Accelerometer",
+//                "Magnetometer_x",
+//                "Magnetometer_y",
+//                "Magnetometer_z",
+//                "Light",
+//                "Orientation(Azimuth)",
+//                "Orientation(Pitch)",
+//                "Orientation(Roll)",
+//                "Proximity",
+//                "Latitude",
+//                "Longitude",
+//                "Speed(GPS)",
+//                "Altitude",
+//                "Battery level(percent)",
+//                "Battery Temperature(celsius)",
+//                "Gravity_x",
+//                "Gravity_y",
+//                "Gravity_z",
+//                "Resultant_gravity",
+//                "Gyroscope_x",
+//                "Gyroscope_y",
+//                "Gyroscope_z",
+//                "Linear_acceleration_x",
+//                "Linear_acceleration_y",
+//                "Linear_acceleration_z",
+//                "Resultant_linear_acceleration",
+                "Activity",
+                "Device position",
+                "Location",
+        };
 
         if (temp == 1)
             csvWriter.writeNext(header);
