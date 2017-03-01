@@ -41,6 +41,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -240,8 +241,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         altiTextView = (TextView) findViewById(R.id.altitudeTextView);
         audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
         checkBox = (CheckBox) findViewById(R.id.sound);
-        if (volumeCheck() == 1 && checkBox.isChecked())
-            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_PLAY_SOUND);
+        if (checkBox.isChecked()) {
+            if (volumeCheck() == 1)
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_PLAY_SOUND);
+        } else {
+            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_PLAY_SOUND);
+        }
+
         calender = Calendar.getInstance(TimeZone.getDefault());
         month = calender.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
         day = calender.get(Calendar.DAY_OF_MONTH);
@@ -254,6 +260,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 "MyWakelockTag");
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                                                @Override
+                                                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                                                    if (checkBox.isChecked()) {
+                                                        if (volumeCheck() == 1)
+                                                            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_PLAY_SOUND);
+                                                    } else {
+                                                        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_PLAY_SOUND);
+                                                    }
+                                                }
+                                            }
+        );
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mySoundPool = new SoundPool.Builder()
@@ -634,8 +653,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 @Override
                 public void run() {
                     mySoundPool.play(mSoundIdtart, 1, 1, 1, 0, 1);
-                    if (volumeCheck() == 1 && checkBox.isChecked())
-                        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_PLAY_SOUND);
+                    if (checkBox.isChecked()) {
+                        if (volumeCheck() == 1)
+                            audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_PLAY_SOUND);
+                    } else {
+                        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_PLAY_SOUND);
+                    }
                     new CountDownTimer(120000, 1000) {
                         public void onTick(long millis) {
                             long seconds = (millis / 1000) % 60;
@@ -663,8 +686,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                         public void onFinish() {
                             mySoundPool.play(mSoundIdStop, 1, 1, 1, 1, 1);
-                            if (volumeCheck() == 1 && checkBox.isChecked())
-                                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_PLAY_SOUND);
+                            if (checkBox.isChecked()) {
+                                if (volumeCheck() == 1)
+                                    audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_PLAY_SOUND);
+                            } else {
+                                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_PLAY_SOUND);
+                            }
                             Toast.makeText(MainActivity.this, String.valueOf("Size is " + dataArray.size()), Toast.LENGTH_LONG).show();
                             BigComputationTask t1 = new BigComputationTask(filename, fileName1, dataArray, MainActivity.this, passView, MainActivity.this);
                             t1.execute();
