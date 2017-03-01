@@ -44,6 +44,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
+
 import java.io.File;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -71,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     final float[] mrotationMatrix = new float[9];
     final float[] morientationAngles = new float[3];
     SensorManager sensorManager;
+
     Sensor senAccelerometer, senMagnetic, senGyroscope, senLinearAcceleration, sensGravity, sensLight, senProximity;
     int acceloremeterFlag = 0, magnetometerFlag = 0, gyroscopeFlag = 0, linearAccelerationFlag = 0,
             gravityFlag = 0, lightFlag = 0, proximityFlag = 0;
@@ -115,6 +119,11 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private String month;
     private ArrayList<String[]> dataArray;
     private View passView;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     public static void verifyStoragePermissions(Activity activity) {
         int permission = ActivityCompat.checkSelfPermission(activity, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -292,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 startActivity(intent);
             }
         };
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0.5f, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 0.5f, locationListener);
         Location location = locationManager
                 .getLastKnownLocation(LocationManager.GPS_PROVIDER);
         if (location != null) {
@@ -423,8 +432,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         textView29.setText(notPresent);
 
         if (Build.VERSION.SDK_INT >= 23 &&
-                ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
 
@@ -444,6 +453,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 // Register the listener with the Location Manager to receive location updates
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
         this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+        // ATTENTION: This was auto-generated to implement the App Indexing API.
+        // See https://g.co/AppIndexing/AndroidStudio for more information.
+        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     @Override
@@ -527,40 +539,40 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
     }
+//
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        if (senMagnetic != null)
+//            sensorManager.registerListener(this, senMagnetic, currentInterval);
+//
+//        if (senAccelerometer != null)
+//            sensorManager.registerListener(this, senAccelerometer, currentInterval);
+//
+//        if (sensLight != null)
+//            sensorManager.registerListener(this, sensLight, currentInterval);
+//
+//        if (senGyroscope != null)
+//            sensorManager.registerListener(this, senGyroscope, currentInterval);
+//
+//        if (senLinearAcceleration != null)
+//            sensorManager.registerListener(this, senLinearAcceleration, currentInterval);
+//
+//        if (sensGravity != null)
+//            sensorManager.registerListener(this, sensGravity, currentInterval);
+//
+//        if (senProximity != null)
+//            sensorManager.registerListener(this, senProximity, currentInterval);
+//        this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
+//
+//    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (senMagnetic != null)
-            sensorManager.registerListener(this, senMagnetic, currentInterval);
-
-        if (senAccelerometer != null)
-            sensorManager.registerListener(this, senAccelerometer, currentInterval);
-
-        if (sensLight != null)
-            sensorManager.registerListener(this, sensLight, currentInterval);
-
-        if (senGyroscope != null)
-            sensorManager.registerListener(this, senGyroscope, currentInterval);
-
-        if (senLinearAcceleration != null)
-            sensorManager.registerListener(this, senLinearAcceleration, currentInterval);
-
-        if (sensGravity != null)
-            sensorManager.registerListener(this, sensGravity, currentInterval);
-
-        if (senProximity != null)
-            sensorManager.registerListener(this, senProximity, currentInterval);
-        this.registerReceiver(this.mBatInfoReceiver, new IntentFilter(Intent.ACTION_BATTERY_CHANGED));
-
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        sensorManager.unregisterListener(this);
-        this.unregisterReceiver(this.mBatInfoReceiver);
-    }
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        sensorManager.unregisterListener(this);
+//        this.unregisterReceiver(this.mBatInfoReceiver);
+//    }
 
     public void logFileClick() {
         String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data/").toString();
@@ -607,17 +619,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             final String filename = day + "_" + month + "_" + myTag + "_" + myTagpos + ".csv";
             final String fileName1 = "AllData.csv";
             Handler handler4 = new Handler();
-            final String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+
             manualLocation = autoCompleteTextView.getText().toString();
-            if (manualLocation.equals("") || manualLocation == null)
-                manualLocation = "Not_specified";
             handler4.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     mySoundPool.play(mSoundIdtart, 1, 1, 1, 0, 1);
                     if (volumeCheck() == 1)
                         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_PLAY_SOUND);
-
                     new CountDownTimer(120000, 1000) {
                         public void onTick(long millis) {
                             long seconds = (millis / 1000) % 60;
@@ -638,9 +647,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     }.start();
                     dataArray.clear();
                     new CountDownTimer(120000, 100) {
-
                         public void onTick(long millis) {
-                            performTick(currentDateTimeString, manualLocation);
+                            performTick(manualLocation);
                         }
 
                         public void onFinish() {
@@ -651,6 +659,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             BigComputationTask t1 = new BigComputationTask(filename, fileName1, dataArray, MainActivity.this, passView, MainActivity.this);
                             t1.execute();
                             findViewById(R.id.button1).performClick();
+                            button.setText("Start Logging !");
                         }
                     }.start();
                 }
@@ -677,7 +686,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-    public void performTick(String currentDateTimeString, String manualLocation) {
+    public void performTick(String manualLocation) {
+        final String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
         Long tsLong = System.currentTimeMillis() / 1000;
         String ts = tsLong.toString();
         String[] data = {ts
@@ -726,5 +736,4 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             return 1;
         else return 0;
     }
-
 }
