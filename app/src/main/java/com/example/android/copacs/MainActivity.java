@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -39,6 +40,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -119,6 +121,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private String month;
     private ArrayList<String[]> dataArray;
     private View passView;
+    private PowerManager powerManager;
+    private PowerManager.WakeLock wakeLock;
+    private CheckBox checkBox;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -234,7 +239,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         rgreading = (TextView) findViewById(R.id.rgReading);
         altiTextView = (TextView) findViewById(R.id.altitudeTextView);
         audioManager = (AudioManager) this.getSystemService(Context.AUDIO_SERVICE);
-        if (volumeCheck() == 1)
+        checkBox = (CheckBox) findViewById(R.id.sound);
+        if (volumeCheck() == 1 && checkBox.isChecked())
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_PLAY_SOUND);
         calender = Calendar.getInstance(TimeZone.getDefault());
         month = calender.getDisplayName(Calendar.MONTH, Calendar.LONG, Locale.getDefault());
@@ -242,9 +248,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         dataArray = new ArrayList<>();
         activitiesSpinner = (Spinner) findViewById(R.id.spinner1);
         phonePositionSpinner = (Spinner) findViewById(R.id.spinner2);
-        currentInterval = 10;
+        currentInterval = 50;
         autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, locations);
+        powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                "MyWakelockTag");
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mySoundPool = new SoundPool.Builder()
@@ -625,7 +634,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 @Override
                 public void run() {
                     mySoundPool.play(mSoundIdtart, 1, 1, 1, 0, 1);
-                    if (volumeCheck() == 1)
+                    if (volumeCheck() == 1 && checkBox.isChecked())
                         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_PLAY_SOUND);
                     new CountDownTimer(120000, 1000) {
                         public void onTick(long millis) {
@@ -646,6 +655,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                     }.start();
                     dataArray.clear();
+                    wakeLock.acquire();
                     new CountDownTimer(120000, 100) {
                         public void onTick(long millis) {
                             performTick(manualLocation);
@@ -653,13 +663,14 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                         public void onFinish() {
                             mySoundPool.play(mSoundIdStop, 1, 1, 1, 1, 1);
-                            if (volumeCheck() == 1)
+                            if (volumeCheck() == 1 && checkBox.isChecked())
                                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_PLAY_SOUND);
                             Toast.makeText(MainActivity.this, String.valueOf("Size is " + dataArray.size()), Toast.LENGTH_LONG).show();
                             BigComputationTask t1 = new BigComputationTask(filename, fileName1, dataArray, MainActivity.this, passView, MainActivity.this);
                             t1.execute();
                             findViewById(R.id.button1).performClick();
                             button.setText("Start Logging !");
+                            wakeLock.release();
                         }
                     }.start();
                 }
