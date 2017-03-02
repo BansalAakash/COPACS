@@ -127,40 +127,45 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             orientation_Y_TextView,
             orientation_Z_TextView,
             proximityTextView,
-//            latitudeTextView,
+    //            latitudeTextView,
 //            longitudeTextView,
 //            batteryLevelTextView,
 //            speedTextView,
 //            batteryTemperatureTextView,
-gravity_x_TextView,
-        gravity_y_TextView,
-        gravity_z_TextView,
-        gyroscope_x_TextView,
-        gyroscope_y_TextView,
-        gyroscope_z_TextView,
-        gravityHeader_TextView,
-        gyroHeader_TextView,
-        linear_x_TextView,
-        linear_y_TextView,
-        linear_z_TextView,
-        linear_acc_header_TextView,
-        notPresentTextView,
-        resultantLinearAccelerationReadingTextView,
-        resultantLinearAccelerationHeaderTextView,
-        resultantGravityHeaderTextView,
-        resultantGravityreadingTextView,
-        resultantAccelerationHeaderTextView,
+    gravity_x_TextView,
+            gravity_y_TextView,
+            gravity_z_TextView,
+            gyroscope_x_TextView,
+            gyroscope_y_TextView,
+            gyroscope_z_TextView,
+            gravityHeader_TextView,
+            gyroHeader_TextView,
+            linear_x_TextView,
+            linear_y_TextView,
+            linear_z_TextView,
+            linear_acc_header_TextView,
+            notPresentTextView,
+            resultantLinearAccelerationReadingTextView,
+            resultantLinearAccelerationHeaderTextView,
+            resultantGravityHeaderTextView,
+            resultantGravityreadingTextView,
+            resultantAccelerationHeaderTextView,
             resultantAcceleratiobReadingTextView,
     //            altitudeTextView,
     logTextView;
 
-    private Button button;
+    private Button
+            mainButton,
+            writeButton;
     private
     MenuItem
             logButton,
             deleteButton;
 
-    private String myTag = "";
+    private String
+            myTag = "",
+            filename,
+            fileName1;
     private int
 //            batteryLevel,
             buttonFlag = 0;
@@ -198,6 +203,7 @@ gravity_x_TextView,
             mSoundIdInit,
             mSoundIdtart,
             mSoundIdStop;
+    private float proximityRange;
 
     private AudioManager audioManager;
     private Calendar calender;
@@ -325,12 +331,13 @@ gravity_x_TextView,
         dataArray = new ArrayList<>();
         activitiesSpinner = (Spinner) findViewById(R.id.spinner1);
         phonePositionSpinner = (Spinner) findViewById(R.id.spinner2);
-        currentInterval = 20000;
+        currentInterval = 50000;
         autoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, locations);
         powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
                 "MyWakelockTag");
+        writeButton = (Button) findViewById(R.id.fileWrite);
         if (volumeCheck() == 1)
             audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), AudioManager.FLAG_PLAY_SOUND);
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -369,7 +376,16 @@ gravity_x_TextView,
                 return false;
             }
         });
-
+        writeButton.setEnabled(false);
+        writeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BigComputationTask t1 = new BigComputationTask(filename, fileName1, dataArray, MainActivity.this, passView, MainActivity.this);
+                t1.execute();
+                Toast.makeText(MainActivity.this, "Write successful !", Toast.LENGTH_SHORT).show();
+                writeButton.setEnabled(false);
+            }
+        });
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 //        locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 //        boolean enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -475,6 +491,7 @@ gravity_x_TextView,
 
         if (senProximity != null) {
             sensorManager.registerListener(this, senProximity, currentInterval);
+            proximityRange = senProximity.getMaximumRange();
             proximityFlag = 1;
         } else
             notPresent += "No Proximity sensor!\n";
@@ -538,8 +555,8 @@ gravity_x_TextView,
 //            return;
 //        }
 
-        button = (Button) findViewById(R.id.button1);
-        button.setText("Start logging!");
+        mainButton = (Button) findViewById(R.id.mainButton);
+        mainButton.setText("Start logging!");
     }
 
 //        mBatInfoReceiver = new BroadcastReceiver() {
@@ -622,6 +639,7 @@ gravity_x_TextView,
             checkUniformity = 0;
             logButton = menu.findItem(R.id.logFileButton);
             deleteButton = menu.findItem(R.id.deleteFileButton);
+            writeButton.setEnabled(false);
             logButton.setEnabled(false);
             deleteButton.setEnabled(false);
             activitiesSpinner.setEnabled(false);
@@ -632,10 +650,10 @@ gravity_x_TextView,
             if (autoCompleteTextView.getText().toString().equals(""))
                 autoCompleteTextView.setText("Not Specified");
             buttonFlag = 1;
-            button.setEnabled(false);
-            button.setText("Just a sec!");
-            final String filename = day + "_" + month + "_" + myTag + "_" + myTagpos + ".csv";
-            final String fileName1 = "AllData.csv";
+            mainButton.setEnabled(false);
+            mainButton.setText("Just a sec!");
+            filename = day + "_" + month + "_" + myTag + "_" + myTagpos + ".csv";
+            fileName1 = "AllData.csv";
             Handler handler4 = new Handler();
 
             manualLocation = autoCompleteTextView.getText().toString();
@@ -658,12 +676,12 @@ gravity_x_TextView,
                                 output += String.valueOf(minutes) + " : " + String.valueOf(seconds);
                             else
                                 output += String.valueOf(seconds) + " seconds";
-                            button.setText(output);
+                            mainButton.setText(output);
                         }
 
                         public void onFinish() {
                             Toast.makeText(MainActivity.this, "Stopped Logging!", Toast.LENGTH_SHORT).show();
-                            button.setEnabled(true);
+                            mainButton.setEnabled(true);
                         }
 
                     }.start();
@@ -682,11 +700,9 @@ gravity_x_TextView,
                             } else {
                                 audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, AudioManager.FLAG_PLAY_SOUND);
                             }
+                            findViewById(R.id.mainButton).performClick();
                             Toast.makeText(MainActivity.this, String.valueOf("Size is " + dataArray.size()), Toast.LENGTH_LONG).show();
-                            BigComputationTask t1 = new BigComputationTask(filename, fileName1, dataArray, MainActivity.this, passView, MainActivity.this);
-                            t1.execute();
-                            findViewById(R.id.button1).performClick();
-                            button.setText("Start Logging !");
+                            mainButton.setText("Start Logging !");
                             wakeLock.release();
                         }
                     }.start();
@@ -709,6 +725,7 @@ gravity_x_TextView,
             activitiesSpinner.setEnabled(true);
             phonePositionSpinner.setEnabled(true);
             autoCompleteTextView.setEnabled(true);
+            writeButton.setEnabled(true);
             autoCompleteTextView.setText("");
             buttonFlag = 0;
         }
@@ -837,7 +854,10 @@ gravity_x_TextView,
             mLightReading = sensorEvent.values[0];
             lightTextView.setText(String.valueOf(mLightReading));
         } else if (sensorEvent.sensor.getType() == Sensor.TYPE_PROXIMITY) {
-            mProximityReading = sensorEvent.values[0];
+            if ((sensorEvent.values[0] - proximityRange) >= 0)
+                mProximityReading = 1;
+            else
+                mProximityReading = 0;
             proximityTextView.setText(String.valueOf(mProximityReading));
         }
     }

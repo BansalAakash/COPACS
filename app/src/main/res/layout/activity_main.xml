@@ -60,14 +60,22 @@
             android:backgroundTint="@color/colorPrimaryDark"
             android:hint="Where are you?" />
 
-
         <Button
-            android:id="@+id/button1"
+            android:id="@+id/mainButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:backgroundTint="@color/colorPrimaryDark"
             android:onClick="mainClick"
+            android:textColor="#ffffff" />
+
+        <Button
+            android:id="@+id/fileWrite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:text="Write to file !"
             android:textColor="#ffffff" />
 
         <TextView
