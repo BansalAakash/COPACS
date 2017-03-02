@@ -127,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             orientation_Y_TextView,
             orientation_Z_TextView,
             proximityTextView,
+            logHistoryTextView,
     //            latitudeTextView,
 //            longitudeTextView,
 //            batteryLevelTextView,
@@ -179,7 +180,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     //    private Location lastKnownLocation;
 //    private BroadcastReceiver mBatInfoReceiver;
-    private String notPresent = "";
+    private String notPresent = "",
+            logHistory = "";
     private ArrayAdapter<String> adapter1;
     private String myTagpos;
     private Spinner
@@ -269,12 +271,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                deleteFileClick(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data Lite"));
+                                deleteFileClick(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data"));
                                 Toast.makeText(MainActivity.this, "Folder deleted!", Toast.LENGTH_SHORT).show();
                             }
                         })
                         .setNegativeButton(android.R.string.no, null).show();
-                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data Lite").mkdir();
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data").mkdir();
                 break;
         }
         return true;
@@ -317,6 +319,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         linear_acc_header_TextView = (TextView) findViewById(R.id.linear_acc_header);
         notPresentTextView = (TextView) findViewById(R.id.notPresentTextView);
         logTextView = (TextView) findViewById(R.id.logTextView);
+        logHistoryTextView = (TextView) findViewById(R.id.logHistory);
         resultantAccelerationHeaderTextView = (TextView) findViewById(R.id.raHeader);
         resultantAcceleratiobReadingTextView = (TextView) findViewById(R.id.raReading);
         resultantLinearAccelerationHeaderTextView = (TextView) findViewById(R.id.rla_header);
@@ -361,9 +364,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         } else {
             mySoundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 1);
         }
-        File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data Lite");
+        File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data");
         if (!folder.exists()) {
             folder.mkdir();
+        }
+        File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data").toURI());
+        File file[] = f.listFiles();
+        if (file.length > 0) {
+            for (File i : file) {
+                if (i.isFile() && !i.getName().contains("AllData")) {
+                    String curname = i.getName().split("\\.")[0];
+                    String details[] = curname.split("_");
+                    if (Integer.parseInt(details[0]) == day && details[1].equalsIgnoreCase(month)) {
+                        logHistory += details[2] + " - " + details[3] + "\n";
+                    }
+                }
+            }
+            logHistoryTextView.setText(logHistory);
         }
         mSoundIdInit = mySoundPool.load(this, R.raw.startsoundinit, 1);
         mSoundIdtart = mySoundPool.load(this, R.raw.startsound, 1);
@@ -383,6 +400,20 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 BigComputationTask t1 = new BigComputationTask(filename, fileName1, dataArray, MainActivity.this, passView, MainActivity.this);
                 t1.execute();
                 Toast.makeText(MainActivity.this, "Write successful !", Toast.LENGTH_SHORT).show();
+                File f = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data").toURI());
+                File file[] = f.listFiles();
+                if (file.length > 0) {
+                    for (File i : file) {
+                        if (i.isFile() && !i.getName().contains("AllData")) {
+                            String curname = i.getName().split("\\.")[0];
+                            String details[] = curname.split("_");
+                            if (Integer.parseInt(details[0]) == day && details[1].equalsIgnoreCase(month)) {
+                                logHistory += details[2] + " - " + details[3] + "\n";
+                            }
+                        }
+                    }
+                    logHistoryTextView.setText(logHistory);
+                }
                 writeButton.setEnabled(false);
             }
         });
@@ -610,7 +641,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 //    }
 
     public void logFileClick() {
-        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data Lite/").toString();
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data/").toString();
 
         Uri selectedUri = Uri.parse(path);
         Intent intent = new Intent(Intent.ACTION_VIEW);

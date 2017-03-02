@@ -110,6 +110,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:text="Configurations logged today:"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/logHistory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="No data logged today !!" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:text="Number of last readings recorded in this session(latest first):"
             android:textStyle="bold" />
 

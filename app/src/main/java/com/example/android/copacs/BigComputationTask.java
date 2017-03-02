@@ -33,7 +33,7 @@ class BigComputationTask extends AsyncTask {
         this.filename = fileName;
         this.fileName1 = fileName1;
         this.mainContext = context;
-        this.path1 = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data Lite").toString();
+        this.path1 = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data").toString();
         this.view = view;
         this.activity1 = activity2;
     }
@@ -42,7 +42,7 @@ class BigComputationTask extends AsyncTask {
     protected Object doInBackground(Object[] params) {
         File file = new File(path1, filename);
         File file1 = new File(path1, fileName1);
-        File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data Lite");
+        File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS + "/Copacs Data");
         if (!folder.exists()) {
             folder.mkdir();
             Log.d(BigComputationTask.class.toString(), "Folder created!");
